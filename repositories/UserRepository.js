@@ -33,6 +33,7 @@ class UserRepository {
 		attrs.id = this.createRandomId();
 		data.push(attrs);
 		await this.writeAll(data);
+		return attrs;
 	}
 	async update(id, attrs) {
 		const users = await this.getAll();
@@ -53,3 +54,5 @@ class UserRepository {
 		return crypto.randomBytes(4).toString('hex');
 	}
 }
+
+module.exports = new UserRepository('users.json');

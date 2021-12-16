@@ -1,8 +1,15 @@
 const express = require('express');
 const app = express();
+const cookieSession = require('cookie-session');
 const port = 8080;
+const userRepo = require('./repositories/UserRepository');
 
 app.use(express.json());
+app.use(
+	cookieSession({
+		keys: [ 'masjhrisdhru46dhds899u65' ]
+	})
+);
 
 app.get('/', (req, res) => {
 	res.send(`
@@ -17,8 +24,18 @@ app.get('/', (req, res) => {
     `);
 });
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
 	const { email, password, confirm } = req.body;
+	const existingUser = await userRepo.getOne({ email });
+	if (existingUser) {
+		return res.send('email already registered');
+	}
+	if (password !== confirm) {
+		return res.send('Password does not match confirmation');
+	}
+	const user = await userRepo.create({ email, password });
+	req.session.userId = user.id;
+	res.send('Account Created');
 });
 
 app.listen(port, () => {
