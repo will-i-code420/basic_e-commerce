@@ -18,6 +18,16 @@ class UserRepository {
 		const users = await this.getAll();
 		return users.find((user) => user.id === id);
 	}
+	async getOneBy(filters) {
+		const users = await this.getAll();
+		for (let user of users) {
+			let found = true;
+			for (let key in filters) {
+				if (user[key] !== filters[key]) found = false;
+			}
+			if (found) return user;
+		}
+	}
 	async create(attrs) {
 		const data = await this.getAll();
 		attrs.id = this.createRandomId();
