@@ -58,7 +58,7 @@ app.get('/signin', (req, res) => {
 app.post('/signin', async (req, res) => {
 	const { email, password } = req.body;
 	const user = userRepo.getOne({ email });
-	if (!user || user.password !== password) {
+	if (!user || userRepo.comparePassword(user.password, password)) {
 		return res.send('Incorrect email or password');
 	}
 	req.session.userId = user.id;

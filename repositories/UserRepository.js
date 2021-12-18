@@ -35,7 +35,7 @@ class UserRepository {
 		const data = await this.getAll();
 		attrs.id = this.createRandomId();
 		const salt = crypto.randomBytes(8).toString('hex');
-		const buff = await scrypt(attrs.password, salt);
+		const buff = await scrypt(attrs.password, salt, 64);
 		const info = {
 			...attrs,
 			password: `${buff.toString('hex')}.${salt}`
@@ -61,6 +61,11 @@ class UserRepository {
 	}
 	createRandomId() {
 		return crypto.randomBytes(4).toString('hex');
+	}
+	async comparePassword(password, inputPassword) {
+		const [ hash, salt ] = password.split('.');
+		const inputHash = await scrypt(inputPassword, salt, 64);
+		return hash === inputHash.toString('hex');
 	}
 }
 
