@@ -4,6 +4,7 @@ const cookieSession = require('cookie-session');
 const port = 8080;
 const authRouter = require('./routes/admin/auth');
 
+app.use(express.static('public'));
 app.use(express.json());
 app.use(
 	cookieSession({
