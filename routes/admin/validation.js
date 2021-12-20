@@ -36,5 +36,7 @@ module.exports = {
 		if (!user) throw new Error('Incorrect email or password');
 		const validPassword = await userRepo.comparePassword(user.password, password);
 		if (!validPassword) throw new Error('Incorrect email or password');
-	})
+	}),
+	requireItem: check('item').trim().isLength({ min: 5, max: 40 }),
+	requirePrice: check('price').trim().toFloat().isFloat({ min: 1, max: 2 })
 };
