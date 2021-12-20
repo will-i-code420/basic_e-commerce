@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { validationResult } = require('express-validator');
-const { requireEmail, requirePassword, confirmPassword } = require('./validation');
+const { requireEmail, requirePassword, confirmPassword, validEmail, validPassword } = require('./validation');
 const userRepo = require('../../repositories/UserRepository');
 const signupTemplate = require('../../views/admin/auth/signup');
 const signinTemplate = require('../../views/admin/auth/signin');
@@ -30,13 +30,13 @@ router.get('/signin', (req, res) => {
 	res.send(signinTemplate());
 });
 
-router.post('/signin', async (req, res) => {
-	const { email, password } = req.body;
-	const user = userRepo.getOne({ email });
-	const validPassword = await userRepo.comparePassword(user.password, password);
-	if (!user || !validPassword) {
-		return res.send('Incorrect email or password');
+router.post('/signin', [ validEmail, validPassword ], async (req, res) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.send(signinTemplate({ errors }));
 	}
+	const { email } = req.body;
+	const user = userRepo.getOne({ email });
 	req.session.userId = user.id;
 	res.send('sign ins');
 });

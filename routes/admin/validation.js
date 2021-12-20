@@ -21,5 +21,20 @@ module.exports = {
 		.withMessage('Must be between 4 and 32 characters')
 		.custom((confirm, { req }) => {
 			if (confirm !== req.body.password) throw new Error('Password does not match confirmation');
-		})
+		}),
+	validEmail: check('email')
+		.trim()
+		.normalizeEmail()
+		.isEmail()
+		.withMessage('Must be valid email address')
+		.custom(async (email) => {
+			const user = await userRepo.getOne({ email });
+			if (!user) throw new Error('Incorrect email or password');
+		}),
+	validPassword: check('password').trim().custom(async (password, { req }) => {
+		const user = await userRepo.getOne({ email: req.body.email });
+		if (!user) throw new Error('Incorrect email or password');
+		const validPassword = await userRepo.comparePassword(user.password, password);
+		if (!validPassword) throw new Error('Incorrect email or password');
+	})
 };
