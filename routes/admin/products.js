@@ -6,8 +6,12 @@ const { handleErrors } = require('middleware');
 const { requireItem, requirePrice } = require('./validation');
 const productRepo = require('../../repositories/ProductRepository');
 const newProductTemplate = require('../../views/admin/products/new');
+const productIndexTemplate = require('../../views/admin/products/index');
 
-router.get('/admin/products', (req, res) => {});
+router.get('/admin/products', async (req, res) => {
+	const products = await productRepo.getAll();
+	res.send(productIndexTemplate({ products }));
+});
 
 router.get('/admin/products/new', (req, res) => {
 	res.send(newProductTemplate({}));
@@ -21,8 +25,9 @@ router.post(
 	async (req, res) => {
 		const { item, price } = req.body;
 		const image = req.file.buffer.toString('base64');
-		const product = await productRepo.create({ item, price, image });
-		res.send(`Added ${product.item} to inventory`);
+		await productRepo.create({ item, price, image });
+		const products = await productRepo.getAll();
+		res.redirect('/admin/products');
 	}
 );
 

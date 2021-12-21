@@ -18,7 +18,7 @@ router.post(
 		const { email, password } = req.body;
 		const user = await userRepo.create({ email, password });
 		req.session.userId = user.id;
-		res.send('Account Created');
+		res.redirect('/admin/products');
 	}
 );
 
@@ -35,7 +35,7 @@ router.post('/signin', [ validEmail, validPassword ], handleErrors(signupTemplat
 	const { email } = req.body;
 	const user = userRepo.getOne({ email });
 	req.session.userId = user.id;
-	res.send('sign ins');
+	res.redirect('/admin/products');
 });
 
 module.exports = router;
