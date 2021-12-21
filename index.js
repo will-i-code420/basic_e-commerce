@@ -6,6 +6,7 @@ const authRouter = require('./routes/admin/auth');
 const productsRouter = require('./routes/admin/products');
 
 app.use(express.static('public'));
+app.use(express.urlencoded());
 app.use(express.json());
 app.use(
 	cookieSession({

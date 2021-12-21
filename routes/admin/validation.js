@@ -37,6 +37,6 @@ module.exports = {
 		const validPassword = await userRepo.comparePassword(user.password, password);
 		if (!validPassword) throw new Error('Incorrect email or password');
 	}),
-	requireItem: check('item').trim().isLength({ min: 5, max: 40 }),
-	requirePrice: check('price').trim().toFloat().isFloat({ min: 1, max: 2 })
+	requireItem: check('item').trim().isLength({ min: 5, max: 40 }).withMessage('Must be between 5 and 40 characters'),
+	requirePrice: check('price').trim().toFloat().isFloat({ min: 1 }).withMessage('Must be greater than 1')
 };
