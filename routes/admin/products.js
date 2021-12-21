@@ -8,7 +8,6 @@ const productRepo = require('../../repositories/ProductRepository');
 const newProductTemplate = require('../../views/admin/products/new');
 const productIndexTemplate = require('../../views/admin/products/index');
 const productEditTemplate = require('../../views/admin/products/edit');
-const { append } = require('express/lib/response');
 
 router.get('/admin/products', isSignedIn, async (req, res) => {
 	const products = await productRepo.getAll();
@@ -29,7 +28,10 @@ router.post(
 	isSignedIn,
 	upload.single('image'),
 	[ requireItem, requirePrice ],
-	handleErrors(productEditTemplate),
+	handleErrors(productEditTemplate, async (req) => {
+		const product = await productRepo.getOne(req.params.id);
+		return { product };
+	}),
 	async (req, res) => {
 		const { id } = req.params;
 		const changes = req.body;
