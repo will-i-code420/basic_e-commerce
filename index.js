@@ -3,7 +3,8 @@ const app = express();
 const cookieSession = require('cookie-session');
 const port = 8080;
 const authRouter = require('./routes/admin/auth');
-const productsRouter = require('./routes/admin/products');
+const authProductsRouter = require('./routes/admin/products');
+const productsRouter = require('./routes/products/products');
 
 app.use(express.static('public'));
 app.use(express.urlencoded());
@@ -15,6 +16,7 @@ app.use(
 );
 
 app.use(authRouter);
+app.use(authProductsRouter);
 app.use(productsRouter);
 
 app.listen(port, () => {
