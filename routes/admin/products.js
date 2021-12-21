@@ -7,11 +7,43 @@ const { requireItem, requirePrice } = require('./validation');
 const productRepo = require('../../repositories/ProductRepository');
 const newProductTemplate = require('../../views/admin/products/new');
 const productIndexTemplate = require('../../views/admin/products/index');
+const productEditTemplate = require('../../views/admin/products/edit');
+const { append } = require('express/lib/response');
 
 router.get('/admin/products', isSignedIn, async (req, res) => {
 	const products = await productRepo.getAll();
 	res.send(productIndexTemplate({ products }));
 });
+
+router.get('/admin/products/:id/edit', isSignedIn, async (req, res) => {
+	const { id } = req.params;
+	const product = await productRepo.getOne(id);
+	if (!product) {
+		return res.send('Unable to locate product');
+	}
+	res.send(productEditTemplate({ product }));
+});
+
+router.post(
+	'/admin/products/:id/edit',
+	isSignedIn,
+	upload.single('image'),
+	[ requireItem, requirePrice ],
+	handleErrors(productEditTemplate),
+	async (req, res) => {
+		const { id } = req.params;
+		const changes = req.body;
+		if (req.file) {
+			changes.image = req.file.buffer.toString('base64');
+		}
+		try {
+			await productRepo.update(id, changes);
+		} catch (e) {
+			return res.send('unable to locate item');
+		}
+		res.redirect('/admin/products');
+	}
+);
 
 router.get('/admin/products/new', isSignedIn, (req, res) => {
 	res.send(newProductTemplate({}));
