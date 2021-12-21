@@ -66,4 +66,10 @@ router.post(
 	}
 );
 
+router.post('/admin/products/:id/delete', isSignedIn, async (req, res) => {
+	const { id } = req.params;
+	await productRepo.delete(id);
+	res.redirect('/admin/products');
+});
+
 module.exports = router;
