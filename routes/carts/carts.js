@@ -36,6 +36,12 @@ router.post('/cart/products', async (req, res) => {
 	res.send('added to cart');
 });
 
-router.post('/cart/delete', async (req, res) => {});
+router.post('/cart/delete/:id', async (req, res) => {
+	const { id } = req.params;
+	const cart = await cartRepo.getOne(req.session.cartId);
+	const items = cart.items.filter((item) => item.id !== id);
+	await cartRepo.update(req.session.cartId, { items });
+	res.redirect('/cart');
+});
 
 module.exports = router;

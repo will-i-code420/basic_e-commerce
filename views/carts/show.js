@@ -17,7 +17,7 @@ module.exports = ({ items }) => {
                 $${item.product.price * item.aty}
               </div>
               <div class="remove">
-                <form method="POST">
+                <form method="POST" action="/cart/delete/${item.product.id}">
                   <button class="button is-danger">                  
                     <span class="icon is-small">
                       <i class="fas fa-times"></i>
