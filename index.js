@@ -5,6 +5,7 @@ const port = 8080;
 const authRouter = require('./routes/admin/auth');
 const authProductsRouter = require('./routes/admin/products');
 const productsRouter = require('./routes/products/products');
+const cartsRouter = require('./routes/carts/carts');
 
 app.use(express.static('public'));
 app.use(express.urlencoded());
@@ -18,6 +19,7 @@ app.use(
 app.use(authRouter);
 app.use(authProductsRouter);
 app.use(productsRouter);
+app.use(cartsRouter);
 
 app.listen(port, () => {
 	console.log(`Server started on Port ${port}`);
